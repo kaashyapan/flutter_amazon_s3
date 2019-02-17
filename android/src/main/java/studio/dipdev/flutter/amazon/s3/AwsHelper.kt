@@ -3,6 +3,7 @@ package studio.dipdev.flutter.amazon.s3
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.util.Base64
 import android.widget.Toast
 import com.amazonaws.AmazonWebServiceClient
 
@@ -47,7 +48,10 @@ class AwsHelper(private val context: Context, private val onUploadCompleteListen
         amazonS3Client.setRegion(com.amazonaws.regions.Region.getRegion(Regions.AP_SOUTH_1))
         transferUtility = TransferUtility(amazonS3Client, context)
 
-        nameOfUploadedFile = "public/" + clean(image.name)
+        val fileName = image.name
+        val bytes = fileName.toByteArray()
+
+        nameOfUploadedFile = "public/" + android.util.Base64.encodeToString(bytes, 1)
         val transferObserver = transferUtility.upload(BUCKET_NAME, nameOfUploadedFile, image)
 
         transferObserver.setTransferListener(object : TransferListener {
