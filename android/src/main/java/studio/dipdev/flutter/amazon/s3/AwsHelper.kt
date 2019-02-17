@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import com.amazonaws.AmazonWebServiceClient
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
@@ -11,6 +12,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.regions.Regions
+import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 
 import java.io.File
@@ -45,7 +47,7 @@ class AwsHelper(private val context: Context, private val onUploadCompleteListen
         amazonS3Client.setRegion(com.amazonaws.regions.Region.getRegion(Regions.AP_SOUTH_1))
         transferUtility = TransferUtility(amazonS3Client, context)
 
-        nameOfUploadedFile = clean(image.name)
+        nameOfUploadedFile = "public/" + clean(image.name)
         val transferObserver = transferUtility.upload(BUCKET_NAME, nameOfUploadedFile, image)
 
         transferObserver.setTransferListener(object : TransferListener {
