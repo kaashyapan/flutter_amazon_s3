@@ -20,10 +20,9 @@ import java.io.File
 import java.io.UnsupportedEncodingException
 import java.util.Locale
 
-class AwsHelper(private val context: Context, private val onUploadCompleteListener: OnUploadCompleteListener, private val BUCKET_NAME: String, private val IDENTITY_POOL_ID: String) {
+class AwsHelper(private val context: Context, private val onUploadCompleteListener: OnUploadCompleteListener, private val BUCKET_NAME: String, private val IDENTITY_POOL_ID: String, private val KEY: String) {
 
     private var transferUtility: TransferUtility
-    private var nameOfUploadedFile: String? = null
 
     init {
         val credentialsProvider = CognitoCachingCredentialsProvider(context, IDENTITY_POOL_ID, Regions.AP_SOUTH_1)
@@ -34,7 +33,7 @@ class AwsHelper(private val context: Context, private val onUploadCompleteListen
     }
 
     private val uploadedUrl: String
-        get() = getUploadedUrl(nameOfUploadedFile)
+        get() = getUploadedUrl(KEY)
 
     private fun getUploadedUrl(key: String?): String {
         return String.format(Locale.getDefault(), URL_TEMPLATE, BUCKET_NAME, key)
@@ -48,16 +47,12 @@ class AwsHelper(private val context: Context, private val onUploadCompleteListen
         amazonS3Client.setRegion(com.amazonaws.regions.Region.getRegion(Regions.AP_SOUTH_1))
         transferUtility = TransferUtility(amazonS3Client, context)
 
-        val fileName = image.name
-        val bytes = fileName.toByteArray()
-
-        nameOfUploadedFile = "public/" + android.util.Base64.encodeToString(bytes, 1)
-        val transferObserver = transferUtility.upload(BUCKET_NAME, nameOfUploadedFile, image)
+        val transferObserver = transferUtility.upload(BUCKET_NAME, KEY, image)
 
         transferObserver.setTransferListener(object : TransferListener {
             override fun onStateChanged(id: Int, state: TransferState) {
                 if (state == TransferState.COMPLETED) {
-                    onUploadCompleteListener.onUploadComplete(getUploadedUrl(nameOfUploadedFile))
+                    onUploadCompleteListener.onUploadComplete(getUploadedUrl(KEY))
                 }
                 if (state == TransferState.FAILED) {
                     onUploadCompleteListener.onFailed()

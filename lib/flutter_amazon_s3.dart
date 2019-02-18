@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 
 class FlutterAmazonS3 {
@@ -7,11 +6,12 @@ class FlutterAmazonS3 {
       const MethodChannel('flutter_amazon_s3');
 
   static Future<String> uploadImage(
-      String filepath, String bucket, String identity) async {
+      String filepath, String bucket, String identity, String key) async {
     final Map<String, dynamic> params = <String, dynamic>{
       'filePath': filepath,
       'bucket': bucket,
       'identity': identity,
+      'key': key,
     };
     final String imagePath =
         await _channel.invokeMethod('uploadImageToAmazon', params);
