@@ -8,6 +8,9 @@ import com.flutteramazons3.FlutterAmazonS3Plugin;
  */
 public final class GeneratedPluginRegistrant {
   public static void registerWith(PluginRegistry registry) {
+     if (registrar.activity() == null) {
+        return;
+    }
     if (alreadyRegisteredWith(registry)) {
       return;
     }
