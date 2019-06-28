@@ -6,10 +6,11 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -18,7 +19,6 @@ rootProject.allprojects {
     repositories {
         google()
         jcenter()
-        maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
     }
 }
 
