@@ -6,4 +6,8 @@
 pubspec.lock
 
 build/
-/.idea
+.idea
+.gradle
+.metadata
+.flutter-plugins
+.flutter-plugins-dependencies
