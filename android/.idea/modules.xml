@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.flutteramazons3-flutter_amazon_s3.iml" filepath="$PROJECT_DIR$/.idea/modules/com.flutteramazons3-flutter_amazon_s3.iml" group="flutter_amazon_s3" />
       <module fileurl="file://$PROJECT_DIR$/flutter_amazon_s3.iml" filepath="$PROJECT_DIR$/flutter_amazon_s3.iml" />
     </modules>
   </component>

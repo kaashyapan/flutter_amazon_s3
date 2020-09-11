@@ -55,6 +55,7 @@ public class FlutterAmazonS3Plugin implements FlutterPlugin, MethodCallHandler {
                 String bucket = call.argument("bucket");
                 String identity = call.argument("identity");
                 String key = call.argument("key");
+                String contentDisposition = call.argument("contentDisposition");
                 File file = new File(filePath);
 
                 try {
@@ -70,7 +71,7 @@ public class FlutterAmazonS3Plugin implements FlutterPlugin, MethodCallHandler {
                             System.out.println("\n✅ upload complete: " + imageUrl);
                             result.success(imageUrl);
                         }
-                    }, bucket, identity, key);
+                    }, bucket, identity, key, contentDisposition);
                     awsHelper.uploadImage(file);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();

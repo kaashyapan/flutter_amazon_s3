@@ -1,35 +1,29 @@
 package studio.dipdev.flutter.amazon.s3
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import android.util.Base64
-import android.widget.Toast
-import com.amazonaws.AmazonWebServiceClient
-
 import com.amazonaws.auth.CognitoCachingCredentialsProvider
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
-
+import com.amazonaws.services.s3.model.ObjectMetadata
 import java.io.File
 import java.io.UnsupportedEncodingException
-import java.util.Locale
+import java.util.*
 
-class AwsHelper(private val context: Context, private val onUploadCompleteListener: OnUploadCompleteListener, private val BUCKET_NAME: String, private val IDENTITY_POOL_ID: String, private val KEY: String) {
+class AwsHelper(private val context: Context, private val onUploadCompleteListener: OnUploadCompleteListener, private val BUCKET_NAME: String, private val IDENTITY_POOL_ID: String, private val KEY: String, private val CONTENTDISPOSITION: String) {
 
     private var transferUtility: TransferUtility
 
     init {
         val credentialsProvider = CognitoCachingCredentialsProvider(context, IDENTITY_POOL_ID, Regions.AP_SOUTH_1)
+        val s3Client: AmazonS3 = AmazonS3ClientBuilder.standard().withCredentials(credentialsProvider).build()
 
-        val amazonS3Client = AmazonS3Client(credentialsProvider)
-        amazonS3Client.setRegion(com.amazonaws.regions.Region.getRegion(Regions.AP_SOUTH_1))
-        transferUtility = TransferUtility(amazonS3Client, context)
+        s3Client.setRegion(com.amazonaws.regions.Region.getRegion(Regions.AP_SOUTH_1))
+        transferUtility = TransferUtility.s3Client(s3Client).context(context).builder()
     }
 
     private val uploadedUrl: String
@@ -41,13 +35,9 @@ class AwsHelper(private val context: Context, private val onUploadCompleteListen
 
     @Throws(UnsupportedEncodingException::class)
     fun uploadImage(image: File): String {
-        val credentialsProvider = CognitoCachingCredentialsProvider(context, IDENTITY_POOL_ID, Regions.AP_SOUTH_1)
-
-        val amazonS3Client = AmazonS3Client(credentialsProvider)
-        amazonS3Client.setRegion(com.amazonaws.regions.Region.getRegion(Regions.AP_SOUTH_1))
-        transferUtility = TransferUtility(amazonS3Client, context)
-
-        val transferObserver = transferUtility.upload(BUCKET_NAME, KEY, image)
+        val metadata = ObjectMetadata()
+        metadata.contentDisposition = CONTENTDISPOSITION
+        val transferObserver = transferUtility.upload(BUCKET_NAME, KEY, image, metadata)
 
         transferObserver.setTransferListener(object : TransferListener {
             override fun onStateChanged(id: Int, state: TransferState) {
