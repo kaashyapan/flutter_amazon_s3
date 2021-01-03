@@ -7,6 +7,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility
 import com.amazonaws.regions.Regions
+import com.amazonaws.regions.Region
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.AmazonS3Client
 import com.amazonaws.services.s3.model.ObjectMetadata
@@ -20,9 +21,8 @@ class AwsHelper(private val context: Context, private val onUploadCompleteListen
 
     init {
         val credentialsProvider = CognitoCachingCredentialsProvider(context, IDENTITY_POOL_ID, Regions.AP_SOUTH_1)
-        val amazonS3Client = AmazonS3Client(credentialsProvider)
-        amazonS3Client.setRegion(com.amazonaws.regions.Region.getRegion(Regions.AP_SOUTH_1))
-        transferUtility = TransferUtility(amazonS3Client, context)
+        val amazonS3Client = AmazonS3Client(credentialsProvider, Region.getRegion(Regions.AP_SOUTH_1))
+        transferUtility = TransferUtility.builder().s3Client(amazonS3Client).context(context).build()
     }
 
     private val uploadedUrl: String
@@ -35,9 +35,8 @@ class AwsHelper(private val context: Context, private val onUploadCompleteListen
     @Throws(UnsupportedEncodingException::class)
     fun uploadImage(image: File): String {
         val credentialsProvider = CognitoCachingCredentialsProvider(context, IDENTITY_POOL_ID, Regions.AP_SOUTH_1)
-        val amazonS3Client = AmazonS3Client(credentialsProvider)
-        amazonS3Client.setRegion(com.amazonaws.regions.Region.getRegion(Regions.AP_SOUTH_1))
-        transferUtility = TransferUtility(amazonS3Client, context)
+        val amazonS3Client = AmazonS3Client(credentialsProvider, Region.getRegion(Regions.AP_SOUTH_1))
+        transferUtility = TransferUtility.builder().s3Client(amazonS3Client).context(context).build()
 
         val metadata = ObjectMetadata()
         metadata.contentDisposition = CONTENTDISPOSITION
