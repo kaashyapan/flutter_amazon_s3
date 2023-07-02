@@ -5,7 +5,8 @@ author: DipDev Studio <info@dipdev.studio>
 homepage: https://git.dipdev.studio/open-source/flutter/AmazonS3
 
 environment:
-  sdk: ">=2.13.0 <3.0.0"
+  sdk: ">=2.19.0 <3.0.6"
+
 
 dependencies:
   flutter:
